@@ -1,0 +1,24 @@
+
+<div class="card flex justify-content-center">
+    <input pInputText placeholder="Konu" style="width: 100%"/>
+</div>
+
+<div class="card">
+    <p-toast></p-toast>
+    <p-fileUpload name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" (onUpload)="onUpload($event)" [multiple]="true" accept="image/*" [maxFileSize]="1000000000" [showUploadButton]="false" chooseLabel="Dosya Seçiniz" cancelLabel="Vazgeç">
+        <ng-template pTemplate="content">
+            <ul *ngIf="uploadedFiles.length">
+                <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes</li>
+            </ul>
+        </ng-template>
+    </p-fileUpload>
+</div>
+
+<div class="card">
+    <span class="p-float-label">
+        <textarea id="float-input" rows="5" cols="30" pInputTextarea style="width: 100%"></textarea>
+        <label for="float-input">Açıklama</label>
+    </span>
+</div>
+
+<p-button label="Success" [text]="true" [raised]="true" severity="success" iconPos="right" icon="pi pi-file-import"></p-button>
