@@ -34,6 +34,6 @@ export class LayoutsComponent {
 
   logout(){
     localStorage.removeItem("response");
-    this.router.navigateByUrl("/login");
+    location.href = "/login";
   }
 }
