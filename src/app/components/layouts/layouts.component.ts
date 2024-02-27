@@ -3,8 +3,9 @@ import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api/menuitem';
 import { MenubarModule } from 'primeng/menubar';
 import { InputTextModule } from 'primeng/inputtext';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-layouts',
@@ -15,6 +16,11 @@ import { ButtonModule } from 'primeng/button';
 })
 export class LayoutsComponent {
   items: MenuItem[] | undefined;
+
+  constructor(
+    public auth: AuthService,
+    private router: Router
+  ){}
 
   ngOnInit() {
       this.items = [
@@ -27,6 +33,7 @@ export class LayoutsComponent {
   }
 
   logout(){
-    alert("Çıkış yapıldı!");
+    localStorage.removeItem("response");
+    this.router.navigateByUrl("/login");
   }
 }

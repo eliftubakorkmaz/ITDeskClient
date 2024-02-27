@@ -25,4 +25,31 @@ body {
     border-radius: 10px;
     margin-bottom: 1rem;
 }
-    
+
+.flex {
+    display: flex;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.h100 {
+    height: 90vh;
+}
+
+.w100 {
+    width: 100%;
+}
+
+.ms-1 {
+    margin-left: 5px;
+}
+
+.gap-1 {
+    gap: 5px;
+}
