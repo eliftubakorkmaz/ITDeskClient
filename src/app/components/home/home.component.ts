@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -9,6 +9,11 @@ import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dy
 import { CreateComponent } from '../create/create.component';
 import { MessageService } from 'primeng/api';
 import { customers } from '../../constants/customer';
+import { TicketModel } from '../../models/ticket.model';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../services/auth.service';
+import { ErrorService } from '../../services/error.service';
+import { HttpService } from '../../services/http.service';
 
 @Component({
   selector: 'app-home',
@@ -18,36 +23,24 @@ import { customers } from '../../constants/customer';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export default class HomeComponent {
-  
-    customers = customers;
+export default class HomeComponent implements OnInit{
+
+    tickets: TicketModel[] = [];
 
     ref: DynamicDialogRef | undefined;
 
-    selectedCustomers!: any;
+    selectedSubject!: any;
 
-    constructor(public dialogService: DialogService, public messageService: MessageService) {}
+    constructor(public dialogService: DialogService, public messageService: MessageService, private http: HttpService) {}
 
-    getSeverity(status: string) {
-        switch (status) {
-            case 'unqualified':
-                return 'danger';
+    ngOnInit(): void {
+        this.getAll();
+    }
 
-            case 'qualified':
-                return 'success';
-
-            case 'new':
-                return 'info';
-
-            case 'negotiation':
-                return 'warning';
-
-            case 'renewal':
-                return 'danger';
-
-            default:
-              return "danger";
-        }
+    getAll(){
+        this.http.get("Tickets/GetAll", (res) => {
+            this.tickets = res
+        })
     }
 
     show() {
@@ -60,11 +53,15 @@ export default class HomeComponent {
         });
 
         this.ref.onClose.subscribe((data: any) => {
-            if (data) {
-              this.messageService.add({ severity: 'info', summary: 'Product Selected', detail: data });
-            }
-        });
 
+            if (data) {
+              this.http.post("Tickets/Add", data, (res) => {
+                this.getAll();
+                    this.messageService.add({ severity : 'success', summary: 'Destek talebi başarıyla açıldı!', detail: ' '});
+                })  
+            };
+        });
+        
         this.ref.onMaximize.subscribe((value) => {
             this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
         });

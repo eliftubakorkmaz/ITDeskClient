@@ -5,18 +5,21 @@ import { CardModule } from 'primeng/card';
 import { PasswordModule } from 'primeng/password';
 import { DividerModule } from 'primeng/divider';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoginModel } from '../../models/login.model';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FormsModule } from '@angular/forms';
 import { GoogleSigninButtonModule, SocialAuthService } from '@abacritt/angularx-social-login';
+import { ErrorService } from '../../services/error.service';
+import { MessagesModule } from 'primeng/messages';
+import { MessageService } from 'primeng/api';
+import { HttpService } from '../../services/http.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, CardModule, ButtonModule,PasswordModule,FormsModule,DividerModule,ToastModule,CheckboxModule,GoogleSigninButtonModule],
+  imports: [CommonModule, CardModule, ButtonModule,PasswordModule,FormsModule,DividerModule,ToastModule,CheckboxModule,GoogleSigninButtonModule,MessagesModule],
   providers: [MessageService],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -25,26 +28,14 @@ import { GoogleSigninButtonModule, SocialAuthService } from '@abacritt/angularx-
 export default class LoginComponent implements OnInit {
   request: LoginModel = new LoginModel();
 
-  constructor(private message: MessageService, private http: HttpClient, private router: Router, private auth: SocialAuthService){}
+  constructor(private message: MessageService, private http: HttpService, private router: Router, private auth: SocialAuthService, private error: ErrorService){}
   ngOnInit(): void {
    this.auth.authState.subscribe(res => {
-    this.http.post("https://localhost:7171/api/Auth/GoogleLogin", res).subscribe({
-      next: res => {
-        localStorage.setItem("response", JSON.stringify(res));
+
+    this.http.post("Auth/GoogleLogin", res, (data => {
+      localStorage.setItem("response", JSON.stringify(data));
         this.router.navigateByUrl("/");
-      },
-      error: (err: HttpErrorResponse) => {
-        switch(err.status){
-          case 400:
-            this.message.add({severity: 'error', summary: "Hata!", detail: err.error.message});
-            break;
-            
-          case 0:
-            this.message.add({severity: 'error', summary: "Hata!", detail: "API adresine ulaşılamıyor!Lütfen daha sonra tekrar deneyiniz."});
-            break;
-        }
-      }
-    })
+    }))
     console.log(res);
    })
   }
@@ -60,29 +51,9 @@ export default class LoginComponent implements OnInit {
         return;
     }
 
-    this.http.post("https://localhost:7171/api/Auth/Login", this.request)
-    .subscribe({
-      next: res => {
-        localStorage.setItem("response", JSON.stringify(res));
-        this.router.navigateByUrl("/");
-      },
-      error: (err: HttpErrorResponse) => {
-        switch(err.status){
-          case 400:
-            this.message.add({severity: 'error', summary: "Hata!", detail: err.error.message});
-            break;
-
-          case 422:
-            for(let e of err.error){
-              this.message.add({severity: 'error', summary: "Validation Hatası!", detail: e});
-            }
-            break;
-
-          case 0:
-            this.message.add({severity: 'error', summary: "Hata!", detail: "API adresine ulaşılamıyor!Lütfen daha sonra tekrar deneyiniz."});
-            break;
-        }
-      }
-    })
+    this.http.post("Auth/Login", this.request, res => {
+      localStorage.setItem("response", JSON.stringify(res));
+      this.router.navigateByUrl("/");
+    });
   }
 }

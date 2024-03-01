@@ -1,11 +1,11 @@
 
 <div class="card flex justify-content-center">
-    <input pInputText placeholder="Konu" style="width: 100%"/>
+    <input pInputText placeholder="Konu" [(ngModel)]="subject" style="width: 100%"/>
 </div>
 
 <div class="card" style="margin-top: 20px;">
     <span class="p-float-label">
-        <textarea id="float-input" rows="5" cols="30" pInputTextarea style="width: 100%;"></textarea>
+        <textarea [(ngModel)]="summary" id="float-input" rows="5" cols="30" pInputTextarea style="width: 100%;"></textarea>
         <label for="float-input">Summary</label>
     </span>
 </div>
@@ -22,5 +22,5 @@
 </div>
 
 <div class="card">
-    <p-button (onClick)="create()" label="Oluştur" [style]="{width: '100%'}" [raised]="true" severity="help"><i class="pi pi-check"></i></p-button>
+    <p-button (click)="create()" label="Oluştur" [style]="{width: '100%'}" [raised]="true" severity="help"><i class="pi pi-check"></i></p-button>
 </div>
