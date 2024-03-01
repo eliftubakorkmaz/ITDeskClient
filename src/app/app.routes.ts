@@ -15,5 +15,10 @@ export const routes: Routes = [
     children: [{
         path: "",
         loadComponent: ()=> import("./components/home/home.component")
-    }]
+    }, 
+    {
+        path: "ticket-details/:Value",
+        loadComponent: ()=> import("./components/detail/detail.component")
+    }
+]
 }];
