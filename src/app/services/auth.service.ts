@@ -29,7 +29,7 @@ export class AuthService {
     this.token.userName = decode?.UserName;
     this.token.userId = decode?.UserId;
     this.token.exp = decode?.exp;
-  
+    this.token.roles = decode?.Roles;
     console.log(this.token);
     
 

@@ -12,6 +12,9 @@ import { TicketModel } from '../../models/ticket.model';
 import { HttpService } from '../../services/http.service';
 import { AgGridModule } from 'ag-grid-angular';
 import { BadgeModule } from 'primeng/badge';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { ButtonRendererComponent } from '../../common/components/button.renderer.component';
 
 @Component({
   selector: 'app-home',
@@ -24,9 +27,9 @@ import { BadgeModule } from 'primeng/badge';
 export default class HomeComponent implements OnInit{
     orgTickets: TicketModel[] = [];
     tickets: TicketModel[] = [];
-
+    frameworkComponents: any;
     ref: DynamicDialogRef | undefined;
-
+    isAdmin: boolean = false;
     selectedSubject!: any;
 
     defaultColDef: any = {
@@ -41,8 +44,19 @@ export default class HomeComponent implements OnInit{
     };
 
     colDefs: any[] = [
-        { headerName: "#", valueGetter: (params: any) => params.node.rowIndex + 1, width:30, filter:false},
-        { field: "subject"},
+        {  headerName: "Detay", 
+        width: '40px',
+        filter: false,
+        cellRenderer: "buttonRenderer",
+        cellRendererParams: {
+            onClick: this.gotoDetail.bind(this),
+            label: 'Go to Detail'
+        }
+        },
+        {
+            field: "userName"
+        },
+        { field: "subject" },
         { 
             field: "createdDate",
             valueFormatter: (params: any) => {
@@ -62,14 +76,32 @@ export default class HomeComponent implements OnInit{
             }
     ];
 
-    constructor(public dialogService: DialogService, public messageService: MessageService, private http: HttpService) {}
-
+    constructor(
+        public dialogService: DialogService,
+        public messageService: MessageService,
+        private http: HttpService,
+        private router: Router,
+        private auth: AuthService) {
+            this.frameworkComponents = {
+                buttonRenderer: ButtonRendererComponent
+              }
+        }
+        
     ngOnInit(): void {
         this.getAll();
     }
 
+    gotoDetail(event: any){
+        const id = event.rowData.id;
+        this.router.navigateByUrl("/ticket-details/" + id)
+    }
+
     getAll(){
-        this.http.get("Tickets/GetAll", (res) => {
+        const data = {
+            roles: this.auth.token.roles
+        };
+
+        this.http.post("Tickets/GetAll",data, (res) => {
             this.tickets = [];
 
             for(let r of res){
@@ -77,10 +109,13 @@ export default class HomeComponent implements OnInit{
                 ticket.id = r.id;
                 ticket.subject = r.subject;
                 ticket.isOpen = r.isOpen;
+                ticket.userName= r.userName;
                 ticket.createdDate = r.createdDate;
                 this.tickets.push(ticket)
             }
-        })
+
+            this.isAdmin = this.auth.token.roles.includes("Admin");
+        });
     }
 
     show() {

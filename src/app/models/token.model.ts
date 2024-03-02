@@ -4,4 +4,5 @@ export class TokenModel{
     userId: string = "";
     userName: string = "";
     exp: number = 0;
+    roles: string = "";
 }
