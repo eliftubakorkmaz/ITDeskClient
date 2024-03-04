@@ -8,39 +8,41 @@ import { ErrorService } from './error.service';
 })
 export class HttpService {
 
-  constructor(private http: HttpClient, private auth: AuthService, private error: ErrorService) {}
+  constructor(
+    private http: HttpClient,
+    private auth: AuthService,
+    private error: ErrorService
+  ) { }
 
-  get(api: string, callBack: (res:any) => void){
+  get(api: string, callBack: (res: any) => void) {
     this.http.get(`https://localhost:7171/api/${api}`, {
-            headers: {
-                "Authorization": "Bearer " + this.auth.tokenString
-            }
-        })
-        .subscribe({
-            next: (res:any) => {
-                callBack(res)
-            },
-
-            error: (err: HttpErrorResponse) => {
-                this.error.errorHandler(err);
-            }
-        })
+      headers: {
+        "Authorization": "Bearer " + this.auth.tokenString
+      }
+    })
+      .subscribe({
+        next: (res: any) => {
+          callBack(res);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.error.errorHandler(err);
+        }
+      })
   }
 
-  post(api: string, data: any, callBack: (res:any) => void){
+  post(api: string, data: any, callBack: (res: any) => void) {
     this.http.post(`https://localhost:7171/api/${api}`, data, {
-            headers: {
-                "Authorization": "Bearer " + this.auth.tokenString
-            }
-        })
-        .subscribe({
-            next: (res:any) => {
-                callBack(res)
-            },
-
-            error: (err: HttpErrorResponse) => {
-                this.error.errorHandler(err);
-            }
-        })
+      headers: {
+        "Authorization": "Bearer " + this.auth.tokenString
+      }
+    })
+      .subscribe({
+        next: (res: any) => {
+          callBack(res);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.error.errorHandler(err);
+        }
+      })
   }
 }

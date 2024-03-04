@@ -1,20 +1,21 @@
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { MenuItem } from 'primeng/api/menuitem';
 import { MenubarModule } from 'primeng/menubar';
-import { InputTextModule } from 'primeng/inputtext';
+import { MenuItem } from 'primeng/api';
 import { Router, RouterOutlet } from '@angular/router';
+import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-layouts',
   standalone: true,
-  imports: [CommonModule, MenubarModule, RouterOutlet, InputTextModule, ButtonModule],
+  imports: [CommonModule, MenubarModule, RouterOutlet,InputTextModule,
+  ButtonModule],
   templateUrl: './layouts.component.html',
   styleUrl: './layouts.component.css'
 })
-export class LayoutsComponent {
+export class LayoutsComponent implements OnInit {
   items: MenuItem[] | undefined;
 
   constructor(
@@ -25,9 +26,9 @@ export class LayoutsComponent {
   ngOnInit() {
       this.items = [
           {
-            label: 'Anasayfa',
-            icon: 'pi pi-fw pi-home',
-            routerLink: "/"
+              label: 'Ana Sayfa',
+              icon: 'pi pi-fw pi-home',
+              routerLink: "/"
           }
       ];
   }
